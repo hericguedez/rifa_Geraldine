@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rifa de 100 Números</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+        .ticket-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .ticket {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .ticket.selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .ticket.blocked {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
+        form {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rifa de 100 Números</h1>
+        <div class="ticket-grid" id="tickets">
+            <!-- Los boletos se generarán aquí con JavaScript -->
+        </div>
+        <form id="formulario" onsubmit="enviarSeleccion(); return false;">
+            <h2>Datos Personales</h2>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" required>
+            <br><br>
+            <label for="telefono">Teléfono:</label>
+            <input type="tel" id="telefono" required>
+            <br><br>
+            <button type="submit">Enviar Selección</button>
+        </form>
+    </div>
+    <script>
+        // URL de la API de Google Apps Script
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbzAluRhtjY1NpMJucYMBGkVRIWweNBjz6s8PhwfNy_LRK_fDU31enmrRzxe83ZAodk/exec'; // Reemplaza con la URL completa de tu API
+
+        // Generar los boletos y bloquear los ya seleccionados
+        const ticketsContainer = document.getElementById('tickets');
+        let selectedTickets = [];
+
+        for (let i = 1; i <= 100; i++) {
+            const ticket = document.createElement('div');
+            ticket.classList.add('ticket');
+            ticket.id = `ticket-${i}`;
+            ticket.innerText = i;
+            ticket.onclick = () => seleccionarBoleto(ticket, i);
+            ticketsContainer.appendChild(ticket);
+        }
+
+        // Función para seleccionar boletos
+        function seleccionarBoleto(ticket, numero) {
+            if (!ticket.classList.contains('blocked')) {
+                ticket.classList.toggle('selected');
+                if (selectedTickets.includes(numero)) {
+                    selectedTickets.splice(selectedTickets.indexOf(numero), 1);
+                } else {
+                    selectedTickets.push(numero);
+                }
+            }
+        }
+
+        // Función para enviar la selección a Google Sheets y enviar mensaje a WhatsApp
+        function enviarSeleccion() {
+            const nombre = document.getElementById('nombre').value;
+            const telefono = document.getElementById('telefono').value;
+            const mensaje = `Hola, soy ${nombre} (${telefono}). Números seleccionados: ${selectedTickets.join(', ')}.`;
+
+            // Envía la selección a Google Sheets
+            selectedTickets.forEach(numero => {
+                fetch(`${apiUrl}?number=${numero}`, {
+                    method: 'GET'
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => console.error('Error:', error));
+            });
+
+            // Abre WhatsApp con el mensaje
+            const whatsappUrl = `https://wa.me/584146602325?text=${encodeURIComponent(mensaje)}`;
+            window.open(whatsappUrl, '_blank');
+            obtenerNumerosSeleccionados(); // Actualiza la lista de números bloqueados
+        }
+
+        // Función para obtener los números bloqueados desde Google Sheets
+        function obtenerNumerosSeleccionados() {
+            fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(num => {
+                    const ticketElement = document.getElementById(`ticket-${num}`);
+                    if (ticketElement) {
+                        ticketElement.classList.add('blocked');
+                        ticketElement.onclick = null; // Deshabilita el clic en números bloqueados
+                    }
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Cargar los números bloqueados al cargar la página
+        document.addEventListener('DOMContentLoaded', obtenerNumerosSeleccionados);
+    </script>
+</body>
+</html>
