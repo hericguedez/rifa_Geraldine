@@ -62,7 +62,7 @@
     </div>
     <script>
         // URL de la API de Google Apps Script
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbzAluRhtjY1NpMJucYMBGkVRIWweNBjz6s8PhwfNy_LRK_fDU31enmrRzxe83ZAodk/exec'; // Reemplaza con la URL completa de tu API
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbzAluRhtjY1NpMJucYMBGkVRIWweNBjz6s8PhwfNy_LRK_fDU31enmrRzxe83ZAodk/exec';
 
         // Generar los boletos y bloquear los ya seleccionados
         const ticketsContainer = document.getElementById('tickets');
@@ -90,28 +90,28 @@
         }
 
         // Función para enviar la selección a Google Sheets y enviar mensaje a WhatsApp
-function enviarSeleccion() {
-    const nombre = document.getElementById('nombre').value;
-    const telefono = document.getElementById('telefono').value;
-    const mensaje = `Hola, soy ${nombre} (${telefono}). Números seleccionados: ${selectedTickets.join(', ')}.`;
+        function enviarSeleccion() {
+            const nombre = document.getElementById('nombre').value;
+            const telefono = document.getElementById('telefono').value;
+            const mensaje = `Hola, soy ${nombre} (${telefono}). Números seleccionados: ${selectedTickets.join(', ')}.`;
 
-    // Envía la selección a Google Sheets
-    selectedTickets.forEach(numero => {
-        fetch(`${apiUrl}?number=${numero}&nombre=${encodeURIComponent(nombre)}&telefono=${encodeURIComponent(telefono)}`, {
-            method: 'GET'
-        })
-        .then(response => response.text())
-        .then(data => {
-            console.log(data);
-        })
-        .catch(error => console.error('Error:', error));
-    });
+            // Envía la selección a Google Sheets
+            selectedTickets.forEach(numero => {
+                fetch(`${apiUrl}?number=${numero}&nombre=${encodeURIComponent(nombre)}&telefono=${encodeURIComponent(telefono)}`, {
+                    method: 'GET'
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => console.error('Error:', error));
+            });
 
-    // Abre WhatsApp con el mensaje
-    const whatsappUrl = `https://wa.me/584146602325?text=${encodeURIComponent(mensaje)}`;
-    window.open(whatsappUrl, '_blank');
-    obtenerNumerosSeleccionados(); // Actualiza la lista de números bloqueados
-}
+            // Abre WhatsApp con el mensaje
+            const whatsappUrl = `https://wa.me/584146602325?text=${encodeURIComponent(mensaje)}`;
+            window.open(whatsappUrl, '_blank');
+            obtenerNumerosSeleccionados(); // Actualiza la lista de números bloqueados
+        }
 
         // Función para obtener los números bloqueados desde Google Sheets
         function obtenerNumerosSeleccionados() {
@@ -126,7 +126,7 @@ function enviarSeleccion() {
                     }
                 });
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => console.error('Error al obtener números seleccionados:', error));
         }
 
         // Cargar los números bloqueados al cargar la página
