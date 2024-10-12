@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rifa a beneficios de Geraldine</title>
     <style>
+        /* Estilos previos */
         body {
             font-family: Arial, sans-serif;
         }
@@ -12,6 +13,19 @@
             width: 80%;
             margin: auto;
             text-align: center;
+        }
+        /* Estilo para el encabezado y la imagen de perfil */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
         }
         .ticket-grid {
             display: flex;
@@ -21,23 +35,23 @@
             margin: 20px 0;
         }
         .ticket {
-        width: 50px;
-        height: 50px;
-        border: 1px solid #333;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-    }
-    .ticket.selected {
-        background-color: #FF69B4; /* Color rosado */
-        color: white;
-    }
-    .ticket.blocked {
-        background-color: #ccc;
-        color: #666;
-        cursor: not-allowed;
-    }
+            width: 50px;
+            height: 50px;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .ticket.selected {
+            background-color: #FF69B4; /* Color rosado */
+            color: white;
+        }
+        .ticket.blocked {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
         form {
             margin-top: 20px;
             display: flex;
@@ -67,12 +81,23 @@
 </head>
 <body>
     <div class="container">
-        <h1>Rifa a beneficio de GERALDINE SUAREZ</h1><br>
+        <!-- Encabezado con imagen de perfil -->
+        <div class="header">
+            <h1>Rifa a beneficio de GERALDINE SUAREZ</h1>
+            <img src="img/geral.png" alt="Imagen de perfil de Geraldine">
+        </div>
+        
         <h3>Me realizaron una cirugía para extirpar un tumor en mi mama derecha y fui diagnosticada con un Adenocarcinoma lobulillar, por lo cual ameritó de un tratamiento de Radioterapia para eliminar cualquier célula maligna que haya quedado en mi mama derecha. Tu aporte será de gran ayuda para culminar mi tratamiento.</h3>
         <p>Sorteo de realizará el día 18 de octubre 7:00 pm por la loteria del Zulia</p>
+ <!-- Imagen debajo del H3 -->
+ <div class="image-container">
+    <img src="img/phone.png" alt="Descripción de la imagen">
+</div>
         <div class="ticket-grid" id="tickets">
             <!-- Los boletos se generarán aquí con JavaScript -->
         </div>
+        
+        <!-- Resto del formulario -->
         <form id="formulario" onsubmit="enviarSeleccion(); return false;">
             <h2>Datos Personales</h2>
             <label for="nombre">Nombre:</label>
@@ -94,10 +119,8 @@
         </form>
     </div>
     <script>
-        // URL de la API de Google Apps Script
+        // JavaScript para manejar la rifa (sin cambios)
         const apiUrl = 'https://script.google.com/macros/s/AKfycbxrQhYkHwFSI4puNEWRZK0p7TfphMxhI45KKm4vP6OMoCPJNveXTuJWplhlS7xLj0HL/exec';
-
-        // Generar los boletos y bloquear los ya seleccionados
         const ticketsContainer = document.getElementById('tickets');
         let selectedTickets = [];
 
@@ -110,7 +133,6 @@
             ticketsContainer.appendChild(ticket);
         }
 
-        // Función para seleccionar boletos
         function seleccionarBoleto(ticket, numero) {
             if (!ticket.classList.contains('blocked')) {
                 ticket.classList.toggle('selected');
@@ -122,13 +144,10 @@
             }
         }
 
-        // Función para enviar la selección a Google Sheets y abrir WhatsApp
         function enviarSeleccion() {
             const nombre = document.getElementById('nombre').value;
             const medioPago = document.getElementById('medioPago').value;
             const mensaje = `Hola, soy ${nombre}. Medio de Pago: ${medioPago}. Números seleccionados: ${selectedTickets.join(', ')}.`;
-
-            // Envía la selección a Google Sheets
             selectedTickets.forEach(numero => {
                 fetch(`${apiUrl}?number=${numero}&nombre=${encodeURIComponent(nombre)}&medioPago=${encodeURIComponent(medioPago)}`, {
                     method: 'GET'
@@ -140,13 +159,11 @@
                 .catch(error => console.error('Error:', error));
             });
 
-            // Abre WhatsApp con el mensaje
             const whatsappUrl = `https://wa.me/584146602325?text=${encodeURIComponent(mensaje)}`;
             window.open(whatsappUrl, '_blank');
-            obtenerNumerosSeleccionados(); // Actualiza la lista de números bloqueados
+            obtenerNumerosSeleccionados();
         }
 
-        // Función para obtener los números bloqueados desde Google Sheets
         function obtenerNumerosSeleccionados() {
             fetch(apiUrl)
             .then(response => response.json())
@@ -155,16 +172,14 @@
                     const ticketElement = document.getElementById(`ticket-${num}`);
                     if (ticketElement) {
                         ticketElement.classList.add('blocked');
-                        ticketElement.onclick = null; // Deshabilita el clic en números bloqueados
+                        ticketElement.onclick = null;
                     }
                 });
             })
             .catch(error => console.error('Error al obtener números seleccionados:', error));
         }
 
-        // Cargar los números bloqueados al cargar la página
         document.addEventListener('DOMContentLoaded', obtenerNumerosSeleccionados);
     </script>
 </body>
 </html>
-
