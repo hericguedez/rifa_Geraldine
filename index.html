@@ -40,12 +40,36 @@
         }
         form {
             margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* Estilos del botón de WhatsApp */
+        .whatsapp-button {
+            background-color: #25D366;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .whatsapp-button img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Rifa de 100 Números</h1>
+        <h1>Rifa a beneficio de GERALDINE SUAREZ</h1><br>
+        <h3>Me realizaron una cirugía para extirpar un tumor en mi mama derecha y fui diagnosticada con un Adenocarcinoma lobulillar, por lo cual ameritó de un tratamiento de Radioterapia para eliminar cualquier célula maligna que haya quedado en mi mama derecha. Tu aporte será de gran ayuda para culminar mi tratamiento.</h3>
+        <p>Sorteo de realizará el día 18 de octubre 7:00 pm por la loteria del Zulia</p>
         <div class="ticket-grid" id="tickets">
             <!-- Los boletos se generarán aquí con JavaScript -->
         </div>
@@ -54,15 +78,24 @@
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" required>
             <br><br>
-            <label for="telefono">Teléfono:</label>
-            <input type="tel" id="telefono" required>
+            <label for="medioPago">Medio de Pago:</label>
+            <select id="medioPago" required>
+                <option value="Pago movil">Pago movil</option>
+                <option value="Zelle">Zelle</option>
+                <option value="Pesos Chilenos">Pesos Chilenos</option>
+                <option value="Pesos Colombianos">Pesos Colombianos</option>
+                <option value="Otro">Otro</option>
+            </select>
             <br><br>
-            <button type="submit">Enviar Selección</button>
+            <button type="submit" class="whatsapp-button">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+                Enviar Selección por WhatsApp
+            </button>
         </form>
     </div>
     <script>
         // URL de la API de Google Apps Script
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbzAluRhtjY1NpMJucYMBGkVRIWweNBjz6s8PhwfNy_LRK_fDU31enmrRzxe83ZAodk/exec';
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbxrQhYkHwFSI4puNEWRZK0p7TfphMxhI45KKm4vP6OMoCPJNveXTuJWplhlS7xLj0HL/exec';
 
         // Generar los boletos y bloquear los ya seleccionados
         const ticketsContainer = document.getElementById('tickets');
@@ -89,15 +122,15 @@
             }
         }
 
-        // Función para enviar la selección a Google Sheets y enviar mensaje a WhatsApp
+        // Función para enviar la selección a Google Sheets y abrir WhatsApp
         function enviarSeleccion() {
             const nombre = document.getElementById('nombre').value;
-            const telefono = document.getElementById('telefono').value;
-            const mensaje = `Hola, soy ${nombre} (${telefono}). Números seleccionados: ${selectedTickets.join(', ')}.`;
+            const medioPago = document.getElementById('medioPago').value;
+            const mensaje = `Hola, soy ${nombre}. Medio de Pago: ${medioPago}. Números seleccionados: ${selectedTickets.join(', ')}.`;
 
             // Envía la selección a Google Sheets
             selectedTickets.forEach(numero => {
-                fetch(`${apiUrl}?number=${numero}&nombre=${encodeURIComponent(nombre)}&telefono=${encodeURIComponent(telefono)}`, {
+                fetch(`${apiUrl}?number=${numero}&nombre=${encodeURIComponent(nombre)}&medioPago=${encodeURIComponent(medioPago)}`, {
                     method: 'GET'
                 })
                 .then(response => response.text())
@@ -134,3 +167,4 @@
     </script>
 </body>
 </html>
+
