@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rifa a beneficios de Geraldine</title>
     <style>
-        /* Estilos previos */
+        /* Estilos generales */
         body {
             font-family: Arial, sans-serif;
         }
@@ -77,6 +77,29 @@
             height: 20px;
             margin-right: 10px;
         }
+        /* Estilo de la imagen principal */
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+        /* Estilos responsivos para pantallas pequeñas */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column; /* Cambia a columna para alinear el título y la imagen verticalmente */
+                text-align: center;
+            }
+            .header img {
+                width: 60px; /* Ajusta el tamaño de la imagen de perfil */
+                height: 60px;
+                margin-top: 10px;
+            }
+            .image-container img {
+                width: 80%; /* Ajusta el tamaño de la imagen principal de la rifa */
+                max-width: 300px; /* Limita el tamaño máximo */
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -88,16 +111,18 @@
         </div>
         
         <h3>Me realizaron una cirugía para extirpar un tumor en mi mama derecha y fui diagnosticada con un Adenocarcinoma lobulillar, por lo cual ameritó de un tratamiento de Radioterapia para eliminar cualquier célula maligna que haya quedado en mi mama derecha. Tu aporte será de gran ayuda para culminar mi tratamiento.</h3>
-        <p>Sorteo de realizará el día viernes 25 de octubre 7:00 pm por la loteria del Zulia</p>
- <!-- Imagen debajo del H3 -->
- <div class="image-container">
-    <img src="img/phone.png" alt="Descripción de la imagen">
-</div>
+        <p>Sorteo de realizará el día viernes 25 de octubre 7:00 pm por la lotería del Zulia</p>
+        
+        <!-- Imagen debajo del H3 -->
+        <div class="image-container">
+            <img src="img/phone.png" alt="Descripción de la imagen">
+        </div>
+
         <div class="ticket-grid" id="tickets">
             <!-- Los boletos se generarán aquí con JavaScript -->
         </div>
         
-        <!-- Resto del formulario -->
+        <!-- Formulario de Datos Personales -->
         <form id="formulario" onsubmit="enviarSeleccion(); return false;">
             <h2>Datos Personales</h2>
             <label for="nombre">Nombre:</label>
@@ -183,3 +208,4 @@
     </script>
 </body>
 </html>
+
